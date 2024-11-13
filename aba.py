@@ -23,6 +23,7 @@ def json_file():
 def main():
     # טוען קובץ JSON ושומר אותו ב-session state
     data = json_file()
+    st.title('ערוך קבצים')
     # רשימת אפשרויות מתוך הקובץ
     options = list(data.keys())    
     # טוען את תוכן קובץ DAT ב-session state כ-StringIO
