@@ -6,6 +6,17 @@ from st_aggrid.shared import GridUpdateMode
 import json
 
 
+# פונקציה לכתיבת נתונים בפורמט קבוע
+def format_row(row, column_widths):
+    
+    formatted_row = ""
+    for col in column_widths.iloc:
+        # חיתוך או הוספת רווחים כדי להתאים לרוחב העמודה
+        formatted_row += f"{str(row[col['שם עמודה']])[:int(col['מספר תווים'])]:<{int(col['מספר תווים'])}}"
+    return formatted_row
+
+# יצירת קובץ DAT
+
 
 def main():
         # הוספת CSS מותאם אישית
@@ -50,7 +61,7 @@ def main():
     
     if uploaded_file is not None:
         # שלב 2: קריאת והצגת הנתונים מהקובץ
-        df = pd.read_fwf(uploaded_file, widths=updated_info['מספר תווים'], names=updated_info['שם עמודה'], encoding='ISO-8859-8')
+        df = pd.read_fwf(uploaded_file, widths=updated_info['מספר תווים'], names=updated_info['שם עמודה'], encoding='ISO-8859-8',  dtype=str)
         # הגדרת הגדרות הטבלה
         gb = GridOptionsBuilder.from_dataframe(df)
         gb.configure_default_column(editable=True)  # הגדרת כל העמודות כניתנות לעריכה
@@ -58,25 +69,27 @@ def main():
 
         # הצגת הטבלה הניתנת לעריכה
         grid_response = AgGrid(
-            df,
+            df.fillna(''),
             gridOptions=grid_options,
             update_mode=GridUpdateMode.VALUE_CHANGED,
         )
 
         # קבלת הנתונים המעודכנים
-        updated_df = pd.DataFrame(grid_response['data'])
+        updated_df = pd.DataFrame(grid_response['data'], dtype=str).fillna('')
         # הצגת הטבלה לאחר עריכה
         st.write("טבלה מעודכנת:")
         st.dataframe(updated_df)
         # שלב 3: הורדה של הקובץ כ-CSV לאחר עיבוד
-        csv = df.to_csv(index=False, encoding='utf-8-sig')
+        formatted_text = ''
+        for _, row in updated_df.iterrows():
+            formatted_line = format_row(row, updated_info)
+            formatted_text =formatted_text + formatted_line + "\n"
 
         st.download_button(
-            label="הורד את הקובץ כ-CSV",
-            data=csv,
-            
-            file_name='modified_data.csv',
-            mime='text/csv',
+            label="הורד קובץ DAT",
+            data=formatted_text,
+            file_name='test.dat',
+            mime="text/plain"  # ניתן להגדיר סוגי MIME נוספים לפי הצורך
         )
 
 
