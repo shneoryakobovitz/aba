@@ -39,7 +39,7 @@ def main():
             df = df[df['סוג רשומה'] == option]
             # הצגת הטבלה עבור האפשרות הנוכחית
             st.write(f"טבלה עבור {option}:")
-            st.dataframe(df.fillna(''))  # הצגת ה-DataFrame עם השלמת ערכים ריקים
+            st.dataframe(df.fillna(''), selection_mode="multi-row")  # הצגת ה-DataFrame עם השלמת ערכים ריקים
 
 main()
 
