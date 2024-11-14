@@ -7,7 +7,7 @@ from io import StringIO
 # פונקציה לטעינת קובץ DAT ושמירת התוכן ב-session state לקריאה חוזרת
 def load_dat_file():
     if 'uploaded_dat_content' not in st.session_state:
-        uploaded_file = st.file_uploader("בחר קובץ להעלאה", type=["dat"])
+        uploaded_file = st.file_uploader("בחר קובץ להעלאה", type=["dat", "txt"])
         if uploaded_file:
             # שמירה של תוכן הקובץ כ-StringIO כך שנוכל להשתמש בו מחדש
             dat_content = StringIO(uploaded_file.getvalue().decode('ISO-8859-8'))
